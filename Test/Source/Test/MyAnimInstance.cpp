@@ -2,13 +2,20 @@
 
 
 #include "MyAnimInstance.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	auto pawn = TryGetPawnOwner();
-	if (IsValid(pawn)) {
-		Speed = pawn->GetVelocity().Size();
+	auto Pawn = TryGetPawnOwner();
+	if (IsValid(Pawn)) {
+		Speed = Pawn->GetVelocity().Size();
+
+		auto Character = Cast<ACharacter>(Pawn);
+		if (Character) {
+			IsFalling = Character->GetMovementComponent()->IsFalling();
+		}
 	}
 }
