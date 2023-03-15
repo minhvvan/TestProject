@@ -3,24 +3,47 @@
 
 #include "MyAIController.h"
 #include "NavigationSystem.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardData.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 AMyAIController::AMyAIController()
 {
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BT(TEXT("/Script/AIModule.BehaviorTree'/Game/AI/BT_MyCharacter.BT_MyCharacter'"));
+	if (BT.Succeeded())
+	{
+		BehaviorTree = BT.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BD(TEXT("/Script/AIModule.BlackboardData'/Game/AI/BB_MyCharacter.BB_MyCharacter'"));
+	if (BD.Succeeded())
+	{
+		BlackboardData = BD.Object;
+	}
 }
 
 void AMyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMyAIController::RandomMove, 3.f, true);
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMyAIController::RandomMove, 3.f, true);
+	
+	UBlackboardComponent* BlackboardComp = Blackboard.Get();
+	if (UseBlackboard(BlackboardData, BlackboardComp))
+	{
+		if (RunBehaviorTree(BehaviorTree))
+		{
+
+		}
+	}
 }
 
 void AMyAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
 
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 }
 
 void AMyAIController::RandomMove()
