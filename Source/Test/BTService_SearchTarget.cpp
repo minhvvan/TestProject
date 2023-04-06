@@ -27,7 +27,7 @@ void UBTService_SearchTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	if (World == nullptr) return;
 
 	TArray<FOverlapResult> OverlapResults;
-	FCollisionQueryParams QuertParams(NAME_None, false, CurrentPawn);
+	FCollisionQueryParams QueryParams(NAME_None, false, CurrentPawn);
 
 	bool bResult = World->OverlapMultiByChannel(
 		OverlapResults,
@@ -35,7 +35,7 @@ void UBTService_SearchTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		FQuat::Identity,
 		ECollisionChannel::ECC_EngineTraceChannel2,
 		FCollisionShape::MakeSphere(SearchRadius),
-		QuertParams);
+		QueryParams);
 
 	if (bResult)
 	{
